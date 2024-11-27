@@ -4,215 +4,131 @@ from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
-# Load the diabetes dataset
+# Load dataset
 data = pd.read_csv("./diabetes.csv")
 
-# Streamlit Markdown for Styling
+# Custom CSS
 st.markdown(
     """
     <style>
-        /* Global styles */
         body {
-            background: linear-gradient(135deg, #00C9FF, #92FE9D);
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            color: #333;
+            background-color: #f3f4f6;
+            font-family: 'Arial', sans-serif;
         }
-
-        /* Main title section */
-        .main-title {
+        .header {
+            background-color: #1e3a8a;
+            color: #ffffff;
             text-align: center;
-            font-size: 3em;
-            font-weight: 700;
-            color: white;
-            padding: 50px 20px;
-            background: linear-gradient(45deg, #FF416C, #FF4B2B);
-            background-size: 200% 200%;
-            animation: gradient 5s ease infinite;
-            border-radius: 12px;
-            box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
-            margin: 40px auto;
-            width: 90%;
-        }
-
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Section titles */
-        .section-title {
-            font-size: 2.5em;
-            font-weight: 600;
-            color: #2C3E50;
-            margin: 50px 0;
-            text-align: center;
-        }
-
-        /* Subtitle styling */
-        .subtitle {
-            text-align: center;
-            font-size: 1.5em;
-            color: #7F8C8D;
-            background-color: white;
-            padding: 30px;
+            padding: 20px;
             border-radius: 10px;
-            box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
-            margin-bottom: 50px;
-            width: 75%;
-            margin-left: auto;
-            margin-right: auto;
         }
-
-        /* Sidebar styles */
-        .sidebar {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-            margin: 30px 0;
-        }
-
-        /* Custom input styling */
-        .stNumberInput, .stTextInput, .stSlider {
+        .content {
+            color: black;
+            background-color: #ffffff;
+            padding: 25px;
+            margin: 20px auto;
             border-radius: 10px;
-            border: 2px solid #00C9FF;
-            padding: 10px;
-            width: 100%;
-            box-sizing: border-box;
-            margin-bottom: 20px;
-            font-size: 1.1em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-
-        /* Button styling */
-        .stButton {
-            font-size: 1.1em;
-            padding: 15px 40px;
-            background-color: #FF416C;
+        .content h3 {
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+        .button {
+            background-color: #10b981;
             color: white;
-            border-radius: 30px;
+            padding: 12px 20px;
             border: none;
-            box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.15);
-            transition: background-color 0.3s ease;
-        }
-
-        .stButton:hover {
-            background-color: #FF4B2B;
+            border-radius: 5px;
             cursor: pointer;
         }
-
-        /* Prediction result */
-        .prediction-result {
-            text-align: center;
-            font-size: 2.2em;
+        .button:hover {
+            background-color: #059669;
+        }
+        .result {
+            padding: 15px;
+            color: white;
             font-weight: bold;
-            padding: 30px;
-            background: #fff;
-            border-radius: 12px;
-            margin-top: 40px;
-            width: 75%;
-            margin-left: auto;
-            margin-right: auto;
-            box-shadow: 0px 6px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            border-radius: 5px;
         }
-
-        .prediction-result.danger {
-            color: #FF4136;
+        .result.success {
+            background-color: #22c55e;
         }
-
-        .prediction-result.success {
-            color: #28a745;
+        .result.danger {
+            background-color: #ef4444;
         }
-
-        /* Progress Bar */
-        .progress-bar {
-            margin: 20px 0;
+        .sidebar-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #4b5563;
+            margin-bottom: 15px;
         }
-
-        /* Cards for user data */
-        .user-data-card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 20px;
+        .sidebar-note {
+            font-size: 0.9em;
+            color: #6b7280;
             margin-bottom: 20px;
-            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
         }
-
-        /* Separator */
-        .separator {
-            border: 0;
-            height: 2px;
-            background: #00C9FF;
-            margin: 40px auto;
-            width: 80%;
-            border-radius: 2px;
-        }
-
     </style>
     """, unsafe_allow_html=True)
 
-# Main Title
-st.markdown('<div class="main-title">Diabetes Prediction App</div>', unsafe_allow_html=True)
+# Header
+st.markdown('<div class="header"><h1>Diabetes Risk Predictor</h1></div>', unsafe_allow_html=True)
 
-# Subtitle
-st.markdown('<div class="subtitle">Predict the likelihood of diabetes based on health data inputs.</div>', unsafe_allow_html=True)
+# Sidebar Inputs
+st.sidebar.markdown('<div class="sidebar-title">Fill Patient Details</div>', unsafe_allow_html=True)
+st.sidebar.markdown('<div class="sidebar-note">Provide accurate data for better prediction results.</div>', unsafe_allow_html=True)
+pregnancies = st.sidebar.number_input('Pregnancies', min_value=0, max_value=17, value=0)
+glucose = st.sidebar.number_input('Glucose Level', min_value=0, max_value=200, value=120)
+bp = st.sidebar.number_input('Blood Pressure', min_value=0, max_value=122, value=70)
+skin_thickness = st.sidebar.number_input('Skin Thickness', min_value=0, max_value=100, value=20)
+insulin = st.sidebar.number_input('Insulin Level', min_value=0, max_value=846, value=79)
+bmi = st.sidebar.number_input('BMI', min_value=0.0, max_value=67.0, value=20.0)
+dpf = st.sidebar.number_input('Diabetes Pedigree Function', min_value=0.0, max_value=2.4, value=0.47)
+age = st.sidebar.slider('Age', min_value=21, max_value=88, value=33)
 
-# Sidebar Input Form for User Data
-st.sidebar.header('Enter Patient Data')
-st.sidebar.write("Fill in the details below for diabetes prediction:")
+user_data = pd.DataFrame({
+    'Pregnancies': [pregnancies],
+    'Glucose': [glucose],
+    'BloodPressure': [bp],
+    'SkinThickness': [skin_thickness],
+    'Insulin': [insulin],
+    'BMI': [bmi],
+    'DiabetesPedigreeFunction': [dpf],
+    'Age': [age]
+})
 
-def calc():
-    pregnancies = st.sidebar.number_input('Pregnancies', min_value=0, max_value=17, value=3)
-    bp = st.sidebar.number_input('Blood Pressure', min_value=0, max_value=122, value=70)
-    bmi = st.sidebar.number_input('BMI', min_value=0, max_value=67, value=20)
-    glucose = st.sidebar.number_input('Glucose', min_value=0, max_value=200, value=120)
-    skinthickness = st.sidebar.number_input('Skin Thickness', min_value=0, max_value=100, value=20)
-    dpf = st.sidebar.number_input('Diabetes Pedigree Function', min_value=0.0, max_value=2.4, value=0.47)
-    insulin = st.sidebar.number_input('Insulin', min_value=0, max_value=846, value=79)
-    age = st.sidebar.number_input('Age', min_value=21, max_value=88, value=33)
+# Main Content: About the App
+st.markdown('<div class="content"><h3>About the Predictor</h3>'
+            '<p>This application leverages machine learning to predict the likelihood of diabetes based on patient data. '
+            'The model is trained on real-world health data to ensure accurate and reliable results.</p>'
+            '<p>By analyzing key health metrics such as glucose level, blood pressure, BMI, and more, the system generates a personalized risk assessment.</p>'
+            '</div>', unsafe_allow_html=True)
 
-    output = {
-        'Pregnancies': pregnancies,
-        'Glucose': glucose,
-        'BloodPressure': bp,
-        'SkinThickness': skinthickness,
-        'Insulin': insulin,
-        'BMI': bmi,
-        'DiabetesPedigreeFunction': dpf,
-        'Age': age
-    }
-    report_data = pd.DataFrame(output, index=[0])
-    return report_data
-
-user_data = calc()
-
-# Display User Data Summary
-st.markdown('<div class="section-title">Patient Data Summary</div>', unsafe_allow_html=True)
+# Display User Input
+st.markdown('<div class="content"><h3>Patient Data Overview</h3>'
+            '<p>The details you entered are summarized below. Please review them carefully before proceeding.</p></div>',
+            unsafe_allow_html=True)
 st.write(user_data)
 
-# Train Model
+# Model Training
 x = data.drop(['Outcome'], axis=1)
 y = data['Outcome']
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
 
-st.markdown('<hr class="separator">', unsafe_allow_html=True)
-
-# Display Progress Bar while Training Model
-progress = st.progress(0)
 rf = RandomForestClassifier()
 rf.fit(x_train, y_train)
-progress.progress(100)
-
-# Prediction Result
 result = rf.predict(user_data)
-prediction = 'You are not Diabetic' if result[0] == 0 else 'You are Diabetic'
 
-# Display Prediction Result
-st.markdown(f"<div class='prediction-result {'danger' if result[0] == 1 else 'success'}'>"
-            f"{prediction}</div>", unsafe_allow_html=True)
+# Prediction Output
+prediction = "High Risk of Diabetes" if result[0] == 1 else "Low Risk of Diabetes"
+st.markdown(
+    f'<div class="content result {"danger" if result[0] == 1 else "success"}">{prediction}</div>',
+    unsafe_allow_html=True
+)
 
-# Display Model Accuracy
+# Model Accuracy
 accuracy = accuracy_score(y_test, rf.predict(x_test)) * 100
-st.markdown(f'<div class="section-title">Model Accuracy : {accuracy:.3f}%</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="content"><h3>Model Accuracy: {accuracy:.2f}%</h3>'
+            '<p>The prediction accuracy of our model is based on comprehensive training using medical datasets.</p>'
+            '</div>', unsafe_allow_html=True)
