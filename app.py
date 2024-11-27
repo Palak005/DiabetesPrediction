@@ -215,5 +215,4 @@ st.markdown(f"<div class='prediction-result {'danger' if result[0] == 1 else 'su
 
 # Display Model Accuracy
 accuracy = accuracy_score(y_test, rf.predict(x_test)) * 100
-st.markdown('<div class="section-title">Model Accuracy</div>', unsafe_allow_html=True)
-st.write(f"{accuracy:.3f}%")
+st.markdown(f'<div class="section-title">Model Accuracy : {accuracy:.3f}%</div>', unsafe_allow_html=True)
