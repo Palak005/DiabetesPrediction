@@ -23,7 +23,7 @@ st.markdown(
         /* Main title section */
         .main-title {
             text-align: center;
-            font-size: 4em;
+            font-size: 3em;
             font-weight: 700;
             color: white;
             padding: 50px 20px;
@@ -33,7 +33,7 @@ st.markdown(
             border-radius: 12px;
             box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
             margin: 40px auto;
-            width: 80%;
+            width: 90%;
         }
 
         @keyframes gradient {
